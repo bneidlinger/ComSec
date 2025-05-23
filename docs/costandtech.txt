@@ -1,0 +1,148 @@
+1. Types of Vibration/Seismic Sensors for Security Cable Sheathing
+A. MEMS Accelerometers
+How they work: Micro-Electro-Mechanical Systems (MEMS) accelerometers detect vibration, tilt, and acceleration in multiple axes. They’re tiny (millimeter-scale), cheap, and available in high volume.
+
+Features:
+
+Low power
+
+High sensitivity to small movements and vibration
+
+Digital and analog output versions
+
+Can be chained or addressable
+
+Example chips:
+
+Bosch BMA400, BMA456: Used in wearables, can run on μA-level currents, cost-effective.
+
+STMicroelectronics LIS2DH12: Used in alarm tamper systems.
+
+Unit price: $0.80–$3.00 in quantity (even less for massive volume, but $1–$2 is a good engineering estimate).
+
+B. Piezoelectric Sensors
+How they work: When physically deformed (by vibration, flex, or pressure), piezoelectric crystals generate a voltage. Very sensitive to knock/tap and used for percussion detection (e.g., glass break sensors).
+
+Features:
+
+Extremely sensitive to sharp impact (wire cut, drill, etc.)
+
+Analog output, easy for threshold triggers
+
+No power required for the element (but signal conditioning circuit needed)
+
+Example:
+
+Murata PKGS series, generic piezo discs.
+
+Unit price: $0.20–$1.00 for the element, but requires amplifier/ADC on PCB.
+
+C. Fiber Optic Vibration Sensing
+How they work: Fiber optics detect minute changes in light transmission when the cable is disturbed. Used for long perimeters and fence security.
+
+Features:
+
+Immune to EMI, high reliability
+
+Can monitor many meters with a single fiber
+
+Expensive, but more secure/robust for long distances
+
+Example:
+
+AP Sensing, Senstar FiberPatrol (industrial products)
+
+Unit price: $$$$ (specialty—hundreds to thousands per run; best for high-security, long-range, government/military).
+
+D. Strain Gauges / Flex Sensors
+How they work: Changes resistance when bent or flexed. Can be integrated for localized detection of cable deformation.
+
+Features:
+
+Simple, robust
+
+Usually used for “tamper detection” at cable ends
+
+Less sensitive to vibration, more to flex/cut
+
+Example:
+
+Spectra Symbol Flex Sensor
+
+Unit price: $2–$5 for small segments.
+
+E. Distributed Acoustic Sensing (DAS)
+How they work: Uses laser pulses through fiber optic cables, detecting acoustic disturbances along the length.
+
+Features:
+
+Monitors 10+ km
+
+Used for pipelines, perimeter fences, but too bulky/expensive for “sheathing a comm line” in most commercial use cases.
+
+Unit price: $$$$ (not practical for small/medium buildings).
+
+2. Commercial Off-the-Shelf (COTS) Examples
+Seismic Cable Security (Alarm Cable with Piezo or MEMS):
+
+Bosch ISC-BDL2-WP12G uses MEMS for glass break and shock
+
+Senstar (FiberPatrol, FlexPS) uses fiber and piezo for high-end applications
+
+RMS Ltd. Vibration Cables: Piezo vibration cable for fence and wall detection
+
+3. Practical Cost Estimates (2025, USD)
+Sensor Type	Typical Cost/Unit	Notes
+MEMS Accelerometer	$1–$3	Best balance for new design, low power, scalable
+Piezo Element	$0.20–$1.00	Needs amplifier/PCB, analog only
+Flex/Strain Sensor	$2–$5	For “cut/flex” but not vibration monitoring
+Fiber Optic (Short)	$10–$50/meter	Only for high security, specialty
+Fiber Optic (DAS)	$1000+/run	Industrial/govt perimeter, not for small cable
+
+4. Integration & Bill of Materials (BOM) Example
+Assume:
+
+Sheath contains 10 MEMS sensors per 10 meters (one every meter, for fine detection)
+
+MCU (Microcontroller for edge AI): $2–$5 per cable segment (ESP32, STM32, etc.)
+
+Sheathing material (anti-cut/anti-drill): $2–$4/meter (Kevlar weave, etc.)
+
+PCB and passive components per meter: $2 (amplifier, connectors, wiring)
+
+Estimated BOM per 10 meters:
+
+MEMS sensors: $15–$20
+
+MCU/edge processor: $4
+
+Kevlar sheath: $30
+
+PCB, connectors: $20
+
+Total: $70–$90 per 10 meters (manufacturing scale; prototype could be 2–3x higher)
+
+Installation, enclosure, certification, and cloud/AI services are extra.
+
+5. Industry and Security Standards
+UL 1076: Proprietary Burglar Alarm Units and Systems (used in high-security environments)
+
+EN 50131: Intrusion and Hold-up systems (Europe)
+
+UL 294: Access Control System Units
+
+6. Summary Table: Pros and Cons
+Tech Type	Cost	Pros	Cons
+MEMS Accelerometer	Low	Cheap, scalable, digital, robust	Somewhat sensitive to false pos.
+Piezo Element	Low	Very sensitive, simple	Needs analog, can be noisy
+Fiber Optic	High	Long range, EMI immune, very secure	Expensive, complex
+Strain/Flex	Low	Simple, robust, “cut” detection	Not great for vibration
+
+References & Further Reading
+MEMS Accelerometers: Digikey Guide
+
+Piezoelectric Sensors Overview – ElectronicsHub
+
+Senstar FiberPatrol
+
+UL 1076 Overview

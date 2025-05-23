@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Seismic AI Security Line Monitor</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    body {
+      background: #181e27;
+      color: #f2f6fa;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      padding: 1.5rem 1rem 1rem 1.5rem;
+      background: #223043;
+      box-shadow: 0 2px 16px #0009;
+      font-size: 1.8rem;
+      color: #79c4ff;
+      letter-spacing: 1px;
+    }
+    .container {
+      max-width: 980px;
+      margin: auto;
+      padding: 2rem 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+    }
+    .left, .right {
+      flex: 1 1 340px;
+      min-width: 300px;
+    }
+    .sensor-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #20293b;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px #12192c33;
+      margin-bottom: 2rem;
+    }
+    .sensor-table th, .sensor-table td {
+      padding: 0.8em 1em;
+      text-align: left;
+    }
+    .sensor-table th {
+      background: #1e2536;
+      color: #79c4ff;
+      font-weight: bold;
+      font-size: 1.05em;
+    }
+    .sensor-table tr {
+      border-bottom: 1px solid #252c38;
+    }
+    .sensor-table td.status-ok {
+      color: #48ec90;
+      font-weight: bold;
+    }
+    .sensor-table td.status-alert {
+      color: #ff7b92;
+      font-weight: bold;
+      animation: blink 1s steps(2, start) infinite;
+    }
+    @keyframes blink {
+      to { opacity: 0.4; }
+    }
+    .status-overview {
+      background: #232f3f;
+      border-radius: 10px;
+      padding: 1.2rem 1rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 2px 8px #101b2c44;
+      font-size: 1.1rem;
+    }
+    .event-log {
+      background: #232c3a;
+      border-radius: 10px;
+      padding: 1.2rem 1rem;
+      height: 260px;
+      overflow-y: auto;
+      font-size: 1rem;
+      box-shadow: 0 2px 8px #101b2c44;
+    }
+    .event {
+      margin-bottom: 0.6em;
+      border-left: 3px solid #79c4ff;
+      padding-left: 0.7em;
+      font-family: "Consolas", "Menlo", monospace;
+      color: #9fdfff;
+    }
+    .event.alert {
+      color: #ff7b92;
+      border-color: #ff7b92;
+      background: #28151e77;
+    }
+    .title {
+      color: #79c4ff;
+      font-size: 1.18em;
+      margin-bottom: 0.8em;
+    }
+    @media (max-width: 900px) {
+      .container { flex-direction: column; }
+      .left, .right { min-width: unset; }
+    }
+  </style>
+</head>
+<body>
+  <header>Seismic AI Security Line Monitor</header>
+  <div class="container">
+    <div class="left">
+      <div class="status-overview">
+        <div><strong>Cable Status:</strong> <span id="mainStatus" style="font-weight:bold;color:#48ec90;">All Secure</span></div>
+        <div><strong>Active Sensors:</strong> <span id="sensorCount">6</span></div>
+        <div><strong>Edge AI:</strong> Learning mode active; anomaly threshold auto-adjusting</div>
+        <div><strong>Last Event:</strong> <span id="lastEvent">None</span></div>
+      </div>
+      <div class="title">Live Sensor Data</div>
+      <table class="sensor-table" id="sensorTable">
+        <thead>
+          <tr>
+            <th>Sensor ID</th>
+            <th>Location</th>
+            <th>Vibration</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Populated by JS -->
+        </tbody>
+      </table>
+    </div>
+    <div class="right">
+      <div class="title">Event Log</div>
+      <div class="event-log" id="eventLog">
+        <!-- Events populated by JS -->
+      </div>
+    </div>
+  </div>
+  <script>
+    // Demo sensors for mockup
+    const sensors = [
+      {id: '01', loc: 'Entrance Panel', v: 0, st: 'OK'},
+      {id: '02', loc: 'Server Room', v: 0, st: 'OK'},
+      {id: '03', loc: 'Main Corridor', v: 0, st: 'OK'},
+      {id: '04', loc: 'Utility Chase', v: 0, st: 'OK'},
+      {id: '05', loc: 'Vault Cable Tray', v: 0, st: 'OK'},
+      {id: '06', loc: 'North Wall', v: 0, st: 'OK'},
+    ];
+    const anomalyThreshold = 7.5; // Vibration units, mock scale
+    const logElem = document.getElementById("eventLog");
+    const mainStatusElem = document.getElementById("mainStatus");
+    const lastEventElem = document.getElementById("lastEvent");
+
+    function getRandomNoise(base, anomaly) {
+      // Slight noise unless anomaly triggered
+      if(anomaly) return base + (Math.random() * 12 + 5);
+      return base + ((Math.random() - 0.5) * 1.2);
+    }
+
+    function renderTable() {
+      const tbody = document.querySelector("#sensorTable tbody");
+      tbody.innerHTML = "";
+      sensors.forEach(s => {
+        let statusClass = s.st === 'OK' ? 'status-ok' : 'status-alert';
+        tbody.innerHTML += `
+          <tr>
+            <td>${s.id}</td>
+            <td>${s.loc}</td>
+            <td>${s.v.toFixed(2)}</td>
+            <td class="${statusClass}">${s.st}</td>
+          </tr>
+        `;
+      });
+    }
+
+    function logEvent(type, msg) {
+      const d = new Date();
+      const time = d.toLocaleTimeString();
+      let html = `<div class="event${type==='alert'?' alert':''}">[${time}] ${msg}</div>`;
+      logElem.innerHTML = html + logElem.innerHTML;
+      lastEventElem.textContent = msg;
+    }
+
+    // Simulate live readings and anomalies
+    function updateSensors() {
+      let triggered = false;
+      // Randomly trigger an anomaly for demo
+      let anomalyIndex = Math.random() < 0.07 ? Math.floor(Math.random()*sensors.length) : -1;
+      sensors.forEach((s, idx) => {
+        let anomaly = idx === anomalyIndex;
+        s.v = getRandomNoise(2, anomaly);
+        if(anomaly && !triggered) {
+          s.st = 'ALERT';
+          triggered = true;
+          mainStatusElem.innerHTML = '<span style="color:#ff7b92;font-weight:bold;">Tamper Detected!</span>';
+          logEvent('alert', `Sensor ${s.id} (${s.loc}): Anomaly detected! Possible tampering or wire cut.`);
+          // Simulated alarm output (could POST to backend)
+        } else {
+          if (s.st === 'ALERT') {
+            // Cooldown to normal after some cycles
+            if (Math.random() < 0.2) s.st = 'OK';
+          } else {
+            s.st = 'OK';
+          }
+        }
+      });
+      if(!triggered) {
+        mainStatusElem.innerHTML = 'All Secure';
+      }
+      renderTable();
+    }
+
+    // Initial rendering
+    renderTable();
+    document.getElementById('sensorCount').textContent = sensors.length;
+
+    // Demo events to fill the log at start
+    setTimeout(() => logEvent('info', 'System boot. All sensors online.'), 600);
+    setTimeout(() => logEvent('info', 'Edge AI: Learning typical vibration patterns.'), 1400);
+
+    setInterval(updateSensors, 1400);
+  </script>
+</body>
+</html>

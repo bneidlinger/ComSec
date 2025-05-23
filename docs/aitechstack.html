@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Edge AI for Seismic Sheath Security</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    body {
+      background: #1b222d;
+      color: #e4e9f3;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #232c3d;
+      color: #6fd3ff;
+      padding: 2rem 1.5rem 1rem 1.5rem;
+      font-size: 2.1rem;
+      box-shadow: 0 2px 14px #07101877;
+    }
+    .container {
+      max-width: 900px;
+      margin: auto;
+      padding: 2rem 1.2rem;
+    }
+    h2 {
+      color: #7dbeff;
+      margin-top: 2.2rem;
+      font-size: 1.3rem;
+    }
+    .diagram-wrap {
+      background: #222a35;
+      border-radius: 15px;
+      padding: 1.5rem 1rem 2rem 1rem;
+      margin: 2rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 0 2px 16px #09111a33;
+    }
+    .stack-diagram {
+      margin: 0.3em 0 0 0;
+    }
+    .stack-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.6em;
+    }
+    .stack-item {
+      background: #293346;
+      color: #74e6ff;
+      border-radius: 12px;
+      padding: 1em 1.9em;
+      margin-bottom: 0.5em;
+      font-size: 1.13em;
+      font-weight: 500;
+      box-shadow: 0 2px 8px #14223844;
+      border: 1.5px solid #334b65;
+      display: flex;
+      align-items: center;
+      gap: 0.6em;
+    }
+    .chip {
+      background: #161c26;
+      color: #ffac4d;
+      font-size: 0.9em;
+      border-radius: 6px;
+      padding: 0.2em 0.65em;
+      margin-left: 0.3em;
+    }
+    .arrow {
+      color: #7dbeff;
+      font-size: 2em;
+    }
+    .why-edge {
+      background: #1c283d;
+      border-radius: 10px;
+      padding: 1.1em 1.4em;
+      font-size: 1.13em;
+      color: #e6baff;
+      margin: 2em 0 0.8em 0;
+      border-left: 5px solid #ff659a;
+      box-shadow: 0 1px 7px #8f2c6455;
+    }
+    pre, code {
+      background: #242c38;
+      color: #85ffdb;
+      border-radius: 6px;
+      padding: 0.35em 0.7em;
+      font-size: 0.97em;
+      line-height: 1.6;
+      overflow-x: auto;
+      margin: 1em 0 1em 0;
+      display: block;
+    }
+    ul, li { margin-top: 0.2em; margin-bottom: 0.2em;}
+    .proven {
+      background: #222f26;
+      color: #9df09f;
+      border-radius: 8px;
+      padding: 1em 1.2em;
+      font-size: 1.07em;
+      margin: 2em 0 0.7em 0;
+      border-left: 5px solid #49d587;
+      box-shadow: 0 1px 7px #2a915044;
+    }
+    footer {
+      text-align: center;
+      color: #667ba2;
+      padding: 1.2em 1em 0.4em 1em;
+      font-size: 0.97em;
+      margin-top: 2em;
+    }
+    @media (max-width: 700px) {
+      .container { padding: 1em 0.2em; }
+      header { font-size: 1.2em; }
+      .diagram-wrap { padding: 1em 0.5em 1.2em 0.5em;}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    Edge AI: Real-Time Security for VibeGuard (No Cloud Needed)
+  </header>
+  <div class="container">
+    <h2>How Edge AI Powers Tamper Detection</h2>
+    <div class="diagram-wrap">
+      <div class="stack-diagram">
+        <div class="stack-box">
+          <div class="stack-item">
+            <span>Seismic / Vibration Sensors</span> <span class="chip">MEMS</span>
+          </div>
+          <div class="arrow">↓</div>
+          <div class="stack-item">
+            <span>Embedded Microcontroller</span> <span class="chip">STM32 / ESP32</span>
+          </div>
+          <div class="arrow">↓</div>
+          <div class="stack-item">
+            <span>Edge AI Model</span> <span class="chip">TinyML / Rule-Based</span>
+          </div>
+          <div class="arrow">↓</div>
+          <div class="stack-item">
+            <span>Local Alert + Dashboard Output</span> <span class="chip">Relay/API/Web</span>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:1.5em;font-size:1.05em;color:#aac8f7;">
+        All AI runs directly on the hardware—no internet or cloud required for fast, private, resilient operation.
+      </div>
+    </div>
+
+    <div class="why-edge">
+      <strong>Why Edge, Not Cloud?</strong><br>
+      &bull; <b>Real-time:</b> Millisecond reaction—no lag, no outages.<br>
+      &bull; <b>Private:</b> No customer data leaves the site.<br>
+      &bull; <b>Secure:</b> Works even if the network goes down or is attacked.<br>
+      &bull; <b>Low power:</b> Runs on cheap microcontrollers;

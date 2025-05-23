@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SeismicGuard Pro - AI Security Line Monitor</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      background: #0f1419;
+      color: #e8f4fd;
+      font-family: 'Segoe UI', 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow-x: hidden;
+    }
+    
+    .header {
+      background: linear-gradient(135deg, #1a2332 0%, #0f1419 100%);
+      padding: 1rem 2rem;
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(45deg, #4fd1c7, #7c3aed);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: white;
+    }
+    
+    .logo-text {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #4fd1c7;
+    }
+    
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+    
+    .status-secure {
+      background: rgba(34, 197, 94, 0.2);
+      color: #22c55e;
+      border: 1px solid rgba(34, 197, 94, 0.3);
+    }
+    
+    .status-alert {
+      background: rgba(239, 68, 68, 0.2);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      animation: pulse-alert 2s infinite;
+    }
+    
+    @keyframes pulse-alert {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+    
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+    
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr 350px;
+      gap: 1.5rem;
+      padding: 1.5rem;
+      height: calc(100vh - 80px);
+    }
+    
+    .left-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    
+    .card {
+      background: rgba(26, 35, 50, 0.7);
+      border: 1px solid rgba(79, 209, 199, 0.2);
+      border-radius: 12px;
+      padding: 1.5rem;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+    
+    .card-header {
+      display: flex;
+      justify-content: between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    
+    .card-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #4fd1c7;
+      margin: 0;
+    }
+    
+    .card-subtitle {
+      font-size: 0.9rem;
+      color: #94a3b8;
+      margin-top: 0.25rem;
+    }
+    
+    .system-overview {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .metric {
+      background: rgba(15, 20, 25, 0.5);
+      padding: 1rem;
+      border-radius: 8px;
+      border: 1px solid rgba(79, 209, 199, 0.1);
+    }
+    
+    .metric-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #4fd1c7;
+      margin-bottom: 0.25rem;
+    }
+    
+    .metric-label {
+      font-size: 0.85rem;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .sensor-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+      max-height: 400px;
+      overflow-y: auto;
+      padding-right: 0.5rem;
+    }
+    
+    .sensor-card {
+      background: rgba(15, 20, 25, 0.8);
+      border: 2px solid rgba(34, 197, 94, 0.3);
+      border-radius: 10px;
+      padding: 1rem;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    
+    .sensor-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(79, 209, 199, 0.2);
+    }
+    
+    .sensor-card.alert {
+      border-color: rgba(239, 68, 68, 0.5);
+      background: rgba(239, 68, 68, 0.1);
+      animation: sensor-alert 1.5s infinite;
+    }
+    
+    @keyframes sensor-alert {
+      0%, 100% { box-shadow: 0 0 0 rgba(239, 68, 68, 0.4); }
+      50% { box-shadow: 0 0 20px rgba(239, 68, 68, 0.6); }
+    }
+    
+    .sensor-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+    
+    .sensor-id {
+      font-weight: 600;
+      color: #4fd1c7;
+      font-size: 1.1rem;
+    }
+    
+    .sensor-status {
+      padding: 0.25rem 0.75rem;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .sensor-status.online {
+      background: rgba(34, 197, 94, 0.2);
+      color: #22c55e;
+    }
+    
+    .sensor-status.alert {
+      background: rgba(239, 68, 68, 0.2);
+      color: #ef4444;
+    }
+    
+    .sensor-location {
+      color: #94a3b8;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+    
+    .sensor-metrics {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+    
+    .sensor-metric {
+      text-align: center;
+    }
+    
+    .sensor-metric-value {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #e8f4fd;
+    }
+    
+    .sensor-metric-label {
+      font-size: 0.75rem;
+      color: #64748b;
+      text-transform: uppercase;
+      margin-top: 0.25rem;
+    }
+    
+    .vibration-chart {
+      height: 60px;
+      margin-top: 0.75rem;
+      position: relative;
+      overflow: hidden;
+      border-radius: 4px;
+      background: rgba(15, 20, 25, 0.5);
+    }
+    
+    .chart-line {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 100%;
+    }
+    
+    .right-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    
+    .ai-status {
+      background: linear-gradient(135deg, rgba(124, 58, 237, 0.2) 0%, rgba(79, 209, 199, 0.2) 100%);
+      border: 1px solid rgba(124, 58, 237, 0.3);
+    }
+    
+    .ai-brain {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    
+    .ai-brain-icon {
+      font-size: 3rem;
+      margin-bottom: 0.5rem;
+      animation: ai-pulse 3s ease-in-out infinite;
+    }
+    
+    @keyframes ai-pulse {
+      0%, 100% { opacity: 0.7; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.05); }
+    }
+    
+    .ai-metrics {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    
+    .ai-metric {
+      text-align: center;
+      padding: 0.75rem;
+      background: rgba(15, 20, 25, 0.5);
+      border-radius: 6px;
+    }
+    
+    .event-log {
+      flex: 1;
+      background: rgba(15, 20, 25, 0.8);
+      max-height: 500px;
+      overflow-y: auto;
+      padding: 0;
+    }
+    
+    .event-log .card-header {
+      padding: 1.5rem 1.5rem 0 1.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .event-list {
+      padding: 0 1.5rem 1.5rem 1.5rem;
+    }
+    
+    .event {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 0.75rem;
+      transition: all 0.2s ease;
+    }
+    
+    .event:hover {
+      background: rgba(79, 209, 199, 0.1);
+    }
+    
+    .event.alert {
+      background: rgba(239, 68, 68, 0.1);
+      border-left: 3px solid #ef4444;
+    }
+    
+    .event.info {
+      background: rgba(59, 130, 246, 0.1);
+      border-left: 3px solid #3b82f6;
+    }
+    
+    .event.success {
+      background: rgba(34, 197, 94, 0.1);
+      border-left: 3px solid #22c55e;
+    }
+    
+    .event-icon {
+      font-size: 1.2rem;
+      margin-top: 0.1rem;
+    }
+    
+    .event-content {
+      flex: 1;
+    }
+    
+    .event-message {
+      font-size: 0.9rem;
+      line-height: 1.4;
+      margin-bottom: 0.25rem;
+    }
+    
+    .event-time {
+      font-size: 0.75rem;
+      color: #64748b;
+    }
+    
+    .controls {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+    
+    .btn {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .btn-primary {
+      background: #4fd1c7;
+      color: #0f1419;
+    }
+    
+    .btn-primary:hover {
+      background: #22d3ee;
+      transform: translateY(-1px);
+    }
+    
+    .btn-secondary {
+      background: rgba(79, 209, 199, 0.2);
+      color: #4fd1c7;
+      border: 1px solid rgba(79, 209, 199, 0.3);
+    }
+    
+    .btn-secondary:hover {
+      background: rgba(79, 209, 199, 0.3);
+    }
+    
+    .scrollbar-custom::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    .scrollbar-custom::-webkit-scrollbar-track {
+      background: rgba(15, 20, 25, 0.5);
+      border-radius: 3px;
+    }
+    
+    .scrollbar-custom::-webkit-scrollbar-thumb {
+      background: rgba(79, 209, 199, 0.3);
+      border-radius: 3px;
+    }
+    
+    .scrollbar-custom::-webkit-scrollbar-thumb:hover {
+      background: rgba(79, 209, 199, 0.5);
+    }
+    
+    @media (max-width: 1200px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto;
+      }
+      
+      .right-panel {
+        order: -1;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .main-grid {
+        padding: 1rem;
+        gap: 1rem;
+      }
+      
+      .header {
+        padding: 1rem;
+      }
+      
+      .logo-text {
+        display: none;
+      }
+      
+      .system-overview {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .sensor-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="logo">
+      <div class="logo-icon">SG</div>
+      <div class="logo-text">SeismicGuard Pro</div>
+    </div>
+    <div class="header-controls">
+      <div id="systemStatus" class="status-indicator status-secure">
+        <div class="status-dot"></div>
+        <span>All Systems Secure</span>
+      </div>
+      <button class="btn btn-secondary" onclick="toggleSettings()">Settings</button>
+    </div>
+  </header>
+
+  <div class="main-grid">
+    <div class="left-panel">
+      <!-- System Overview -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">System Overview</h2>
+            <p class="card-subtitle">Real-time monitoring of all protected communication lines</p>
+          </div>
+        </div>
+        
+        <div class="system-overview">
+          <div class="metric">
+            <div class="metric-value" id="activeSensors">12</div>
+            <div class="metric-label">Active Sensors</div>
+          </div>
+          <div class="metric">
+            <div class="metric-value" id="protectedLines">3</div>
+            <div class="metric-label">Protected Lines</div>
+          </div>
+          <div class="metric">
+            <div class="metric-value" id="uptime">99.7%</div>
+            <div class="metric-label">System Uptime</div>
+          </div>
+          <div class="metric">
+            <div class="metric-value" id="lastThreat">7 days</div>
+            <div class="metric-label">Last Threat</div>
+          </div>
+        </div>
+        
+        <div class="controls">
+          <button class="btn btn-primary" onclick="runDiagnostics()">Run Diagnostics</button>
+          <button class="btn btn-secondary" onclick="exportReport()">Export Report</button>
+          <button class="btn btn-secondary" onclick="toggleAI()">AI Learning: ON</button>
+        </div>
+      </div>
+
+      <!-- Sensor Grid -->
+      <div class="card" style="flex: 1;">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">Sensor Network Status</h2>
+            <p class="card-subtitle">Individual sensor monitoring and health status</p>
+          </div>
+        </div>
+        
+        <div class="sensor-grid scrollbar-custom" id="sensorGrid">
+          <!-- Sensors will be populated by JavaScript -->
+        </div>
+      </div>
+    </div>
+
+    <div class="right-panel">
+      <!-- AI Status -->
+      <div class="card ai-status">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">AI Detection Engine</h2>
+            <p class="card-subtitle">Machine learning anomaly detection</p>
+          </div>
+        </div>
+        
+        <div class="ai-brain">
+          <div class="ai-brain-icon">🧠</div>
+          <div style="font-weight: 600; color: #7c3aed;">Learning Mode Active</div>
+          <div style="font-size: 0.85rem; color: #94a3b8; margin-top: 0.5rem;">
+            Continuously adapting to environmental patterns
+          </div>
+        </div>
+        
+        <div class="ai-metrics">
+          <div class="ai-metric">
+            <div style="font-size: 1.5rem; font-weight: 600; color: #7c3aed;" id="aiAccuracy">97.3%</div>
+            <div style="font-size: 0.75rem; color: #64748b; margin-top: 0.25rem;">ACCURACY</div>
+          </div>
+          <div class="ai-metric">
+            <div style="font-size: 1.5rem; font-weight: 600; color: #4fd1c7;" id="falsePositives">0.2%</div>
+            <div style="font-size: 0.75rem; color: #64748b; margin-top: 0.25rem;">FALSE POSITIVES</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Event Log -->
+      <div class="card event-log">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">Event Log</h2>
+            <p class="card-subtitle">Real-time system events and alerts</p>
+          </div>
+        </div>
+        
+        <div class="event-list scrollbar-custom" id="eventList">
+          <!-- Events will be populated by JavaScript -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Sensor configuration
+    const sensors = [
+      { id: 'SG-001', location: 'Main Entrance Panel', zone: 'Entry', baseline: 2.1 },
+      { id: 'SG-002', location: 'Server Room North', zone: 'Critical', baseline: 1.8 },
+      { id: 'SG-003', location: 'Server Room South', zone: 'Critical', baseline: 1.9 },
+      { id: 'SG-004', location: 'Main Corridor', zone: 'Transit', baseline: 2.3 },
+      { id: 'SG-005', location: 'Utility Chase A', zone: 'Service', baseline: 1.7 },
+      { id: 'SG-006', location: 'Utility Chase B', zone: 'Service', baseline: 1.6 },
+      { id: 'SG-007', location: 'Vault Cable Tray', zone: 'Secure', baseline: 1.4 },
+      { id: 'SG-008', location: 'North Wall Conduit', zone: 'Perimeter', baseline: 2.0 },
+      { id: 'SG-009', location: 'South Wall Conduit', zone: 'Perimeter', baseline: 2.1 },
+      { id: 'SG-010', location: 'Emergency Exit', zone: 'Exit', baseline: 1.9 },
+      { id: 'SG-011', location: 'Loading Dock', zone: 'Service', baseline: 2.8 },
+      { id: 'SG-012', location: 'Roof Access', zone: 'Perimeter', baseline: 1.5 }
+    ];
+
+    let sensorData = {};
+    let eventLog = [];
+    let systemState = {
+      secure: true,
+      aiLearning: true,
+      diagnosticsRunning: false
+    };
+
+    // Initialize sensor data
+    sensors.forEach(sensor => {
+      sensorData[sensor.id] = {
+        ...sensor,
+        currentVibration: sensor.baseline + (Math.random() - 0.5) * 0.5,
+        status: 'online',
+        lastUpdate: new Date(),
+        history: [],
+        signalStrength: 85 + Math.random() * 10,
+        batteryLevel: 92 + Math.random() * 6
+      };
+    });
+
+    function addEvent(type, message, sensorId = null) {
+      const event = {
+        id: Date.now(),
+        type,
+        message,
+        sensorId,
+        timestamp: new Date(),
+        acknowledged: false
+      };
+      
+      eventLog.unshift(event);
+      if (eventLog.length > 50) {
+        eventLog.pop();
+      }
+      
+      renderEventLog();
+      
+      if (type === 'alert') {
+        updateSystemStatus(false);
+      }
+    }
+
+    function updateSystemStatus(secure) {
+      const statusElement = document.getElementById('systemStatus');
+      systemState.secure = secure;
+      
+      if (secure) {
+        statusElement.className = 'status-indicator status-secure';
+        statusElement.innerHTML = '<div class="status-dot"></div><span>All Systems Secure</span>';
+      } else {
+        statusElement.className = 'status-indicator status-alert';
+        statusElement.innerHTML = '<div class="status-dot"></div><span>Security Alert Active</span>';
+      }
+    }
+
+    function renderSensors() {
+      const grid = document.getElementById('sensorGrid');
+      grid.innerHTML = '';
+      
+      sensors.forEach(sensor => {
+        const data = sensorData[sensor.id];
+        const isAlert = data.status === 'alert';
+        
+        const sensorCard = document.createElement('div');
+        sensorCard.className = `sensor-card ${isAlert ? 'alert' : ''}`;
+        
+        // Generate mini vibration chart
+        const chartData = data.history.slice(-20).map((val, i) => 
+          `${i * 5},${60 - (val / 10 * 50)}`
+        ).join(' ');
+        
+        sensorCard.innerHTML = `
+          <div class="sensor-header">
+            <div class="sensor-id">${sensor.id}</div>
+            <div class="sensor-status ${data.status}">${data.status.toUpperCase()}</div>
+          </div>
+          <div class="sensor-location">${sensor.location}</div>
+          <div class="sensor-metrics">
+            <div class="sensor-metric">
+              <div class="sensor-metric-value">${data.currentVibration.toFixed(2)}</div>
+              <div class="sensor-metric-label">Vibration</div>
+            </div>
+            <div class="sensor-metric">
+              <div class="sensor-metric-value">${Math.round(data.signalStrength)}%</div>
+              <div class="sensor-metric-label">Signal</div>
+            </div>
+          </div>
+          <div class="vibration-chart">
+            <svg class="chart-line" viewBox="0 0 100 60" preserveAspectRatio="none">
+              <polyline 
+                points="${chartData}" 
+                fill="none" 
+                stroke="${isAlert ? '#ef4444' : '#4fd1c7'}" 
+                stroke-width="2"
+                opacity="0.8"
+              />
+            </svg>
+          </div>
+        `;
+        
+        grid.appendChild(sensorCard);
+      });
+    }
+
+    function renderEventLog() {
+      const eventContainer = document.getElementById('eventList');
+      eventContainer.innerHTML = '';
+      
+      eventLog.slice(0, 20).forEach(event => {
+        const eventDiv = document.createElement('div');
+        eventDiv.className = `event ${event.type}`;
+        
+        const icons = {
+          alert: '🚨',
+          info: 'ℹ️',
+          success: '✅',
+          warning: '⚠️'
+        };
+        
+        eventDiv.innerHTML = `
+          <div class="event-icon">${icons[event.type] || 'ℹ️'}</div>
+          <div class="event-content">
+            <div class="event-message">${event.message}</div>
+            <div class="event-time">${event.timestamp.toLocaleTimeString()}</div>
+          </div>
+        `;
+        
+        eventContainer.appendChild(eventDiv);
+      });
+    }
+
+    function simulateAnomalyDetection() {
+      // Randomly trigger anomalies for demonstration
+      if (Math.random() < 0.03) {
+        const randomSensor = sensors[Math.floor(Math.random() * sensors.length)];
+        const data = sensorData[randomSensor.id];
+        
+        // Create anomaly
+        data.currentVibration = data.baseline + Math.random() * 8 + 5;
+        data.status = 'alert';
+        
+        addEvent('alert', 
+          `Anomaly detected at ${randomSensor.location}. Vibration level: ${data.currentVibration.toFixed(2)} units (threshold: ${(data.baseline + 3).toFixed(2)})`,
+          randomSensor.id
+        );
+        
+        // Auto-resolve after 5-15 seconds
+        setTimeout(() => {
+          data.status = 'online';
+          data.currentVibration = data.baseline + (Math.random() - 0.5) * 0.8;
+          addEvent('success', `Sensor ${randomSensor.id} returned to normal operation`);
+          
+          // Check if all sensors are back to normal
+          const alertSensors = Object.values(sensorData).filter(s => s.status === 'alert');
+          if (alertSensors.length === 0) {
+            updateSystemStatus(true);
+          }
+        }, 5000 + Math.random() * 10000);
+      }
+    }
+
+    function updateSensorReadings() {
+      sensors.forEach(sensor => {
+        const data = sensorData[sensor.id];
+        
+        if (data.status === 'online') {
+          // Normal fluctuation around baseline
+          const fluctuation = (Math.random() - 0.5) * 0.6;
+          data.currentVibration = Math.max(0, data.baseline + fluctuation);
+          
+          // Slight signal strength variation
+          data.signalStrength = Math.max(75, Math.min(100, data.signalStrength + (Math.random() - 0.5) * 2));
+        }
+        
+        // Update history for chart
+        data.history.push(data.currentVibration);
+        if (data.history.length > 50) {
+          data.history.shift();
+        }
+        
+        data.lastUpdate = new Date();
+      });
+    }
+
+    function runDiagnostics() {
+      if (systemState.diagnosticsRunning) return;
+      
+      systemState.diagnosticsRunning = true;
+      const btn = event.target;
+      btn.textContent = 'Running...';
+      btn.disabled = true;
+      
+      addEvent('info', 'System diagnostics initiated');
+      
+      setTimeout(() => {
+        addEvent('success', 'Diagnostics completed successfully. All sensors operational.');
+        btn.textContent = 'Run Diagnostics';
+        btn.disabled = false;
+        systemState.diagnosticsRunning = false;
+      }, 3000);
+    }
+
+    function exportReport() {
+      addEvent('info', 'Generating system report...');
+      
+      setTimeout(() => {
+        addEvent('success', 'System report exported successfully');
+      }, 1500);
+    }
+
+    function toggleAI() {
+      systemState.aiLearning = !systemState.aiLearning;
+      const btn = event.target;
+      btn.textContent = `AI Learning: ${systemState.aiLearning ? 'ON' : 'OFF'}`;
+      
+      addEvent('info', `AI learning mode ${systemState.aiLearning ? 'enabled' : 'disabled'}`);
+    }
+
+    function toggleSettings() {
+      addEvent('info', 'Settings panel opened');
+    }
+
+    // Initialize system
+    function init() {
+      addEvent('success', 'SeismicGuard Pro system initialized');
+      addEvent('info', 'AI learning engine started');
+      addEvent('info', `${sensors.length} sensors online and monitoring`);
+      
+      renderSensors();
+      renderEventLog();
+      
+      // Update sensor readings every 2 seconds
+      setInterval(() => {
+        updateSensorReadings();
+        renderSensors();
+      }, 2000);
+      
+      // Check for anomalies every 3 seconds
+      setInterval(simulateAnomalyDetection, 3000);
+      
+      // Add periodic system events
+      setInterval(() => {
+        if (Math.random() < 0.1) {
+          const events = [
+            'AI model updated with new environmental patterns',
+            'System backup completed successfully',
+            'Network connectivity verified',
+            'Sensor calibration check completed'
+          ];
+          addEvent('info', events[Math.floor(Math.random() * events.length)]);
+        }
+      }, 15000);
+    }
+
+    // Start the system
+    init();
+  </script>
+</body>
+</html>

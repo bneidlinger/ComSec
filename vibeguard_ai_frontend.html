@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>VibeGuard AI - Intelligent Security Line Monitor</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    :root {
+      --primary: #4fd1c7;
+      --primary-dark: #22d3ee;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --success: #22c55e;
+      --bg-primary: #0f1419;
+      --bg-secondary: #1a2332;
+      --bg-card: rgba(26, 35, 50, 0.7);
+      --text-primary: #e8f4fd;
+      --text-secondary: #94a3b8;
+      --border: rgba(79, 209, 199, 0.2);
+    }
+    
+    body {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      overflow-x: hidden;
+    }
+    
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+      padding: 1rem 2rem;
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    
+    .header-content {
+      max-width: 1600px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(45deg, var(--primary), #7c3aed);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+    
+    .logo-text {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--primary);
+    }
+    
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+    
+    .status-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    
+    .status-secure {
+      background: rgba(34, 197, 94, 0.2);
+      color: var(--success);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+    }
+    
+    .status-alert {
+      background: rgba(239, 68, 68, 0.2);
+      color: var(--danger);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      animation: pulse-alert 2s infinite;
+    }
+    
+    @keyframes pulse-alert {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+    
+    .btn {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: rgba(79, 209, 199, 0.2);
+      color: var(--primary);
+      border: 1px solid var(--border);
+    }
+    
+    .btn:hover {
+      background: rgba(79, 209, 199, 0.3);
+      transform: translateY(-1px);
+    }
+    
+    /* Main Layout */
+    .main-container {
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 1.5rem;
+    }
+    
+    /* Dashboard Grid */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    
+    .metric-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+    }
+    
+    .metric-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(79, 209, 199, 0.2);
+    }
+    
+    .metric-value {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+    
+    .metric-label {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .metric-trend {
+      font-size: 0.8rem;
+      color: var(--success);
+      margin-top: 0.5rem;
+    }
+    
+    /* Main Content Area */
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1fr 400px;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+    
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    
+    .card-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--primary);
+    }
+    
+    /* Sensor Grid */
+    .sensor-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1rem;
+      max-height: 600px;
+      overflow-y: auto;
+      padding-right: 0.5rem;
+    }
+    
+    .sensor-card {
+      background: rgba(15, 20, 25, 0.8);
+      border: 2px solid rgba(34, 197, 94, 0.3);
+      border-radius: 10px;
+      padding: 1rem;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .sensor-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--primary), transparent);
+      animation: scan 3s linear infinite;
+      opacity: 0.5;
+    }
+    
+    @keyframes scan {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+    
+    .sensor-card.alert {
+      border-color: var(--danger);
+      background: rgba(239, 68, 68, 0.1);
+    }
+    
+    .sensor-card.alert::before {
+      background: linear-gradient(90deg, transparent, var(--danger), transparent);
+      animation-duration: 1s;
+    }
+    
+    .sensor-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+    
+    .sensor-id {
+      font-weight: 600;
+      color: var(--primary);
+      font-size: 1.1rem;
+    }
+    
+    .sensor-status {
+      padding: 0.25rem 0.75rem;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+    }
+    
+    .status-online {
+      background: rgba(34, 197, 94, 0.2);
+      color: var(--success);
+    }
+    
+    .status-warning {
+      background: rgba(245, 158, 11, 0.2);
+      color: var(--warning);
+    }
+    
+    .status-alert {
+      background: rgba(239, 68, 68, 0.2);
+      color: var(--danger);
+    }
+    
+    /* Waveform Visualization */
+    .waveform-container {
+      height: 80px;
+      background: rgba(15, 20, 25, 0.5);
+      border-radius: 6px;
+      margin-top: 1rem;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .waveform-canvas {
+      width: 100%;
+      height: 100%;
+    }
+    
+    /* AI Insights Panel */
+    .ai-panel {
+      background: linear-gradient(135deg, rgba(124, 58, 237, 0.2) 0%, rgba(79, 209, 199, 0.2) 100%);
+      border: 1px solid rgba(124, 58, 237, 0.3);
+    }
+    
+    .ai-status {
+      text-align: center;
+      padding: 2rem 0;
+    }
+    
+    .ai-brain {
+      font-size: 4rem;
+      animation: ai-pulse 3s ease-in-out infinite;
+      margin-bottom: 1rem;
+    }
+    
+    @keyframes ai-pulse {
+      0%, 100% { opacity: 0.7; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.1); }
+    }
+    
+    .ai-metrics {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+    
+    .ai-metric {
+      text-align: center;
+      padding: 1rem;
+      background: rgba(15, 20, 25, 0.5);
+      border-radius: 8px;
+    }
+    
+    /* Event Timeline */
+    .event-timeline {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    
+    .event-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 0.75rem;
+      transition: all 0.2s ease;
+      position: relative;
+      border-left: 3px solid transparent;
+    }
+    
+    .event-item:hover {
+      background: rgba(79, 209, 199, 0.1);
+    }
+    
+    .event-alert {
+      background: rgba(239, 68, 68, 0.1);
+      border-left-color: var(--danger);
+    }
+    
+    .event-info {
+      background: rgba(59, 130, 246, 0.1);
+      border-left-color: #3b82f6;
+    }
+    
+    .event-success {
+      background: rgba(34, 197, 94, 0.1);
+      border-left-color: var(--success);
+    }
+    
+    .event-icon {
+      font-size: 1.2rem;
+      margin-top: 0.1rem;
+    }
+    
+    .event-content {
+      flex: 1;
+    }
+    
+    .event-message {
+      font-size: 0.9rem;
+      line-height: 1.4;
+      margin-bottom: 0.25rem;
+    }
+    
+    .event-time {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+    
+    /* Scrollbar Styling */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: rgba(15, 20, 25, 0.5);
+      border-radius: 3px;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: rgba(79, 209, 199, 0.3);
+      border-radius: 3px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(79, 209, 199, 0.5);
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 1200px) {
+      .content-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .dashboard-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .header-content {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .sensor-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-content">
+      <div class="logo">
+        <div class="logo-icon">VG</div>
+        <div class="logo-text">VibeGuard AI</div>
+      </div>
+      <div class="header-actions">
+        <div id="systemStatus" class="status-badge status-secure">
+          <span class="status-dot">●</span>
+          <span>All Systems Secure</span>
+        </div>
+        <button class="btn" onclick="openSettings()">Settings</button>
+        <button class="btn" onclick="exportData()">Export</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="main-container">
+    <!-- Key Metrics Dashboard -->
+    <div class="dashboard-grid">
+      <div class="metric-card">
+        <div class="metric-value" id="activeSensors">24</div>
+        <div class="metric-label">Active Sensors</div>
+        <div class="metric-trend">↑ 100% uptime</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" id="threatScore">0.12</div>
+        <div class="metric-label">Threat Score</div>
+        <div class="metric-trend">↓ 15% from yesterday</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" id="aiAccuracy">98.7%</div>
+        <div class="metric-label">AI Accuracy</div>
+        <div class="metric-trend">↑ 0.3% this week</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" id="lastIncident">7d</div>
+        <div class="metric-label">Since Last Alert</div>
+        <div class="metric-trend">Previous: 3 days</div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content-grid">
+      <!-- Sensor Monitoring -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Live Sensor Network</h2>
+          <button class="btn" onclick="runDiagnostics()">Diagnostics</button>
+        </div>
+        <div class="sensor-grid" id="sensorGrid">
+          <!-- Sensors will be populated by JavaScript -->
+        </div>
+      </div>
+
+      <!-- AI Panel & Events -->
+      <div>
+        <!-- AI Status -->
+        <div class="card ai-panel" style="margin-bottom: 1.5rem;">
+          <div class="card-header">
+            <h2 class="card-title">AI Detection Engine</h2>
+          </div>
+          <div class="ai-status">
+            <div class="ai-brain">🧠</div>
+            <div style="font-weight: 600; color: #7c3aed;">Neural Network Active</div>
+            <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.5rem;">
+              Learning from 2.4M vibration patterns
+            </div>
+          </div>
+          <div class="ai-metrics">
+            <div class="ai-metric">
+              <div style="font-size: 1.8rem; font-weight: 600; color: #7c3aed;">156ms</div>
+              <div style="font-size: 0.75rem; color: var(--text-secondary);">AVG RESPONSE</div>
+            </div>
+            <div class="ai-metric">
+              <div style="font-size: 1.8rem; font-weight: 600; color: var(--primary);">0.2%</div>
+              <div style="font-size: 0.75rem; color: var(--text-secondary);">FALSE POSITIVE</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Event Timeline -->
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Event Timeline</h2>
+          </div>
+          <div class="event-timeline" id="eventTimeline">
+            <!-- Events will be populated by JavaScript -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Sensor configuration
+    const sensorLocations = [
+      { id: 'VG-001', location: 'Main Entrance', zone: 'Perimeter', baseline: 2.1 },
+      { id: 'VG-002', location: 'Server Rack A', zone: 'Critical', baseline: 1.8 },
+      { id: 'VG-003', location: 'Server Rack B', zone: 'Critical', baseline: 1.9 },
+      { id: 'VG-004', location: 'Network Core', zone: 'Critical', baseline: 1.7 },
+      { id: 'VG-005', location: 'Utility Chase 1', zone: 'Service', baseline: 2.3 },
+      { id: 'VG-006', location: 'Utility Chase 2', zone: 'Service', baseline: 2.2 },
+      { id: 'VG-007', location: 'Cable Vault', zone: 'Secure', baseline: 1.4 },
+      { id: 'VG-008', location: 'North Conduit', zone: 'Perimeter', baseline: 2.0 },
+      { id: 'VG-009', location: 'South Conduit', zone: 'Perimeter', baseline: 2.1 },
+      { id: 'VG-010', location: 'Emergency Exit', zone: 'Exit', baseline: 1.9 },
+      { id: 'VG-011', location: 'Loading Bay', zone: 'Service', baseline: 2.8 },
+      { id: 'VG-012', location: 'Roof Access', zone: 'Perimeter', baseline: 1.5 }
+    ];
+
+    // Global state
+    let sensorData = {};
+    let eventLog = [];
+    let alertActive = false;
+
+    // Initialize sensor data
+    sensorLocations.forEach(sensor => {
+      sensorData[sensor.id] = {
+        ...sensor,
+        currentValue: sensor.baseline,
+        status: 'online',
+        history: new Array(50).fill(sensor.baseline),
+        anomalyScore: 0,
+        signalStrength: 95 + Math.random() * 5
+      };
+    });
+
+    // Create waveform visualization
+    function createWaveform(canvas, data, isAlert = false) {
+      const ctx = canvas.getContext('2d');
+      const width = canvas.width;
+      const height = canvas.height;
+      
+      ctx.clearRect(0, 0, width, height);
+      
+      // Draw waveform
+      ctx.beginPath();
+      ctx.strokeStyle = isAlert ? '#ef4444' : '#4fd1c7';
+      ctx.lineWidth = 2;
+      
+      const step = width / data.length;
+      data.forEach((value, i) => {
+        const x = i * step;
+        const y = height / 2 - (value / 10) * (height / 2);
+        
+        if (i === 0) {
+          ctx.moveTo(x, y);
+        } else {
+          ctx.lineTo(x, y);
+        }
+      });
+      
+      ctx.stroke();
+      
+      // Add glow effect
+      ctx.shadowBlur = isAlert ? 20 : 10;
+      ctx.shadowColor = isAlert ? '#ef4444' : '#4fd1c7';
+      ctx.stroke();
+    }
+
+    // Render sensors
+    function renderSensors() {
+      const grid = document.getElementById('sensorGrid');
+      grid.innerHTML = '';
+      
+      Object.values(sensorData).forEach(sensor => {
+        const isAlert = sensor.status === 'alert';
+        const isWarning = sensor.anomalyScore > 0.5 && sensor.anomalyScore < 0.8;
+        
+        const sensorCard = document.createElement('div');
+        sensorCard.className = `sensor-card ${isAlert ? 'alert' : ''}`;
+        
+        sensorCard.innerHTML = `
+          <div class="sensor-header">
+            <div class="sensor-id">${sensor.id}</div>
+            <div class="sensor-status ${isAlert ? 'status-alert' : isWarning ? 'status-warning' : 'status-online'}">
+              ${isAlert ? 'ALERT' : isWarning ? 'WARNING' : 'ONLINE'}
+            </div>
+          </div>
+          <div style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem;">
+            ${sensor.location} • ${sensor.zone}
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+            <div>
+              <div style="font-size: 1.5rem; font-weight: 600;">${sensor.currentValue.toFixed(2)}</div>
+              <div style="font-size: 0.75rem; color: var(--text-secondary);">VIBRATION</div>
+            </div>
+            <div>
+              <div style="font-size: 1.5rem; font-weight: 600; color: ${sensor.anomalyScore > 0.8 ? 'var(--danger)' : sensor.anomalyScore > 0.5 ? 'var(--warning)' : 'var(--success)'}">
+                ${(sensor.anomalyScore * 100).toFixed(0)}%
+              </div>
+              <div style="font-size: 0.75rem; color: var(--text-secondary);">ANOMALY</div>
+            </div>
+          </div>
+          <div class="waveform-container">
+            <canvas class="waveform-canvas" width="280" height="80"></canvas>
+          </div>
+        `;
+        
+        grid.appendChild(sensorCard);
+        
+        // Draw waveform
+        const canvas = sensorCard.querySelector('.waveform-canvas');
+        createWaveform(canvas, sensor.history.slice(-30), isAlert);
+      });
+    }
+
+    // Add event to timeline
+    function addEvent(type, message, sensorId = null) {
+      const event = {
+        id: Date.now(),
+        type,
+        message,
+        sensorId,
+        timestamp: new Date()
+      };
+      
+      eventLog.unshift(event);
+      if (eventLog.length > 100) eventLog.pop();
+      
+      renderEvents();
+    }
+
+    // Render event timeline
+    function renderEvents() {
+      const timeline = document.getElementById('eventTimeline');
+      timeline.innerHTML = '';
+      
+      eventLog.slice(0, 20).forEach(event => {
+        const eventDiv = document.createElement('div');
+        eventDiv.className = `event-item event-${event.type}`;
+        
+        const icons = {
+          alert: '🚨',
+          info: 'ℹ️',
+          success: '✅',
+          warning: '⚠️'
+        };
+        
+        eventDiv.innerHTML = `
+          <div class="event-icon">${icons[event.type]}</div>
+          <div class="event-content">
+            <div class="event-message">${event.message}</div>
+            <div class="event-time">${event.timestamp.toLocaleTimeString()}</div>
+          </div>
+        `;
+        
+        timeline.appendChild(eventDiv);
+      });
+    }
+
+    // Update system status
+    function updateSystemStatus(secure) {
+      const statusBadge = document.getElementById('systemStatus');
+      if (secure) {
+        statusBadge.className = 'status-badge status-secure';
+        statusBadge.innerHTML = '<span class="status-dot">●</span><span>All Systems Secure</span>';
+      } else {
+        statusBadge.className = 'status-badge status-alert';
+        statusBadge.innerHTML = '<span class="status-dot">●</span><span>Security Alert Active</span>';
+      }
+    }
+
+    // Simulate sensor updates
+    function updateSensorData() {
+      let hasAlert = false;
+      
+      Object.values(sensorData).forEach(sensor => {
+        // Normal fluctuation
+        const noise = (Math.random() - 0.5) * 0.8;
+        sensor.currentValue = Math.max(0, sensor.baseline + noise);
+        
+        // Update history
+        sensor.history.push(sensor.currentValue);
+        sensor.history.shift();
+        
+        // Calculate anomaly score (simplified)
+        const deviation = Math.abs(sensor.currentValue - sensor.baseline);
+        const maxDeviation = sensor.baseline * 0.5;
+        sensor.anomalyScore = Math.min(1, deviation / maxDeviation);
+        
+        // Random anomaly for demo (3% chance)
+        if (Math.random() < 0.03 && sensor.status === 'online') {
+          sensor.currentValue = sensor.baseline + Math.random() * 8 + 5;
+          sensor.anomalyScore = 0.8 + Math.random() * 0.2;
+          sensor.status = 'alert';
+          hasAlert = true;
+          
+          addEvent('alert', 
+            `Anomaly detected at ${sensor.location}. Vibration: ${sensor.currentValue.toFixed(2)} (${(sensor.anomalyScore * 100).toFixed(0)}% confidence)`,
+            sensor.id
+          );
+          
+          // Auto-resolve after 5-10 seconds
+          setTimeout(() => {
+            sensor.status = 'online';
+            sensor.anomalyScore = 0;
+            addEvent('success', `Sensor ${sensor.id} returned to normal operation`);
+            
+            // Check if all clear
+            const activeAlerts = Object.values(sensorData).filter(s => s.status === 'alert');
+            if (activeAlerts.length === 0) {
+              updateSystemStatus(true);
+              addEvent('info', 'All systems returned to secure state');
+            }
+          }, 5000 + Math.random() * 5000);
+        }
+      });
+      
+      if (hasAlert) {
+        updateSystemStatus(false);
+      }
+      
+      renderSensors();
+    }
+
+    // Button handlers
+    function runDiagnostics() {
+      addEvent('info', 'System diagnostics initiated...');
+      setTimeout(() => {
+        addEvent('success', 'Diagnostics complete. All sensors operational.');
+        // Update metrics
+        document.getElementById('aiAccuracy').textContent = '98.9%';
+      }, 2000);
+    }
+
+    function openSettings() {
+      addEvent('info', 'Settings panel accessed');
+    }
+
+    function exportData() {
+      addEvent('info', 'Exporting system data...');
+      setTimeout(() => {
+        addEvent('success', 'Data export completed successfully');
+      }, 1500);
+    }
+
+    // Initialize the system
+    function initialize() {
+      addEvent('success', 'VibeGuard AI system initialized');
+      addEvent('info', 'Neural network loaded: 2.4M training samples');
+      addEvent('info', `${Object.keys(sensorData).length} sensors online and monitoring`);
+      
+      renderSensors();
+      renderEvents();
+      
+      // Update sensors every 2 seconds
+      setInterval(updateSensorData, 2000);
+      
+      // Update metrics periodically
+      setInterval(() => {
+        // Update threat score
+        const avgAnomaly = Object.values(sensorData).reduce((sum, s) => sum + s.anomalyScore, 0) / Object.keys(sensorData).length;
+        document.getElementById('threatScore').textContent = avgAnomaly.toFixed(2);
+        
+        // Add periodic system events
+        if (Math.random() < 0.1) {
+          const events = [
+            'AI model updated with new patterns',
+            'Backup completed successfully',
+            'Network connectivity verified',
+            'Sensor calibration check passed'
+          ];
+          addEvent('info', events[Math.floor(Math.random() * events.length)]);
+        }
+      }, 5000);
+    }
+
+    // Start the application
+    initialize();
+  </script>
+</body>
+</html>
