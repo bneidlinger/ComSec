@@ -8,7 +8,7 @@
 > **AI-Enhanced Physical Security**: Protecting critical communication infrastructure with embedded machine learning and vibration analysis
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/bneidlinger/vibeguard-ai/main/docs/images/vibeguard-banner.png" alt="VibeGuard AI Banner" width="800">
+  <img src="bannerimage.png" alt="VibeGuard AI Banner" width="800">
 </p>
 
 ## 🚨 The Problem
