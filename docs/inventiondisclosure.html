@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Lab Notebook – Premium Tamper Detection Invention</title>
+  <style>
+    body {
+      background: #181c1f;
+      color: #e7ffe7;
+      font-family: 'Roboto Mono', 'Consolas', monospace;
+      margin: 0; padding: 0 0 60px 0;
+      line-height: 1.7;
+    }
+    .container {
+      max-width: 900px;
+      margin: 38px auto 0 auto;
+      background: #24282b;
+      border-radius: 12px;
+      box-shadow: 0 2px 24px #0008;
+      padding: 40px 32px 32px 32px;
+    }
+    h1, h2, h3, h4 {
+      color: #79ff95;
+      letter-spacing: 1px;
+      margin-top: 26px;
+      font-family: 'Roboto', 'Arial', sans-serif;
+    }
+    h1 { font-size: 2.1em; margin-bottom: 0.4em;}
+    h2 { font-size: 1.15em; margin-bottom: 0.5em; color: #aaf3b2;}
+    h3 { font-size: 1.05em; margin-bottom: 0.2em; color: #b8fff7;}
+    label {
+      color: #c5ffcf;
+      font-size: 1em;
+      margin-bottom: 4px;
+      font-weight: bold;
+      display: block;
+    }
+    .disclosure, .section {
+      background: #1a2222;
+      border: 1px solid #30463b;
+      border-radius: 8px;
+      padding: 22px 26px;
+      margin: 22px 0 36px 0;
+      box-shadow: 0 0 10px #07381020;
+    }
+    .log-entry {
+      background: #222529;
+      border-left: 4px solid #77ffa2;
+      border-radius: 6px;
+      padding: 13px 18px;
+      margin-bottom: 18px;
+      font-size: 1em;
+      color: #d6fff2;
+    }
+    .log-date {
+      color: #66e6ff;
+      font-size: 0.97em;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+    .log-location {
+      color: #8fffbf;
+      font-size: 0.92em;
+      margin-bottom: 3px;
+      font-style: italic;
+    }
+    pre, code {
+      background: #181c1f;
+      color: #b5ffb7;
+      border-radius: 5px;
+      padding: 3px 8px;
+      font-size: 1em;
+    }
+    ul {
+      margin-top: 0.6em;
+      margin-bottom: 0.7em;
+      padding-left: 1.5em;
+    }
+    .sig {
+      color: #98ffd3;
+      font-size: 1em;
+      margin-top: 30px;
+      font-family: 'Roboto Mono', monospace;
+    }
+    .sketch {
+      margin-top: 13px;
+      margin-bottom: 10px;
+      border: 1.5px dashed #55b86d;
+      border-radius: 7px;
+      background: #212a1f;
+      padding: 14px 10px 6px 10px;
+    }
+    .note {
+      color: #91e9b0;
+      font-size: 0.97em;
+      margin: 7px 0 0 0;
+    }
+    .log-form {
+      background: #252a25;
+      border: 1px solid #305e4b;
+      border-radius: 7px;
+      padding: 17px 16px 12px 16px;
+      margin-bottom: 20px;
+      margin-top: 14px;
+    }
+    .log-form textarea {
+      width: 96%;
+      min-height: 50px;
+      font-family: 'Roboto Mono', monospace;
+      font-size: 1em;
+      border-radius: 6px;
+      border: 1px solid #355e4b;
+      background: #1c2320;
+      color: #c7ffe7;
+      margin-bottom: 10px;
+      padding: 8px 7px;
+      resize: vertical;
+    }
+    .log-form button {
+      padding: 7px 16px;
+      border-radius: 6px;
+      border: none;
+      background: #69fcb2;
+      color: #10361e;
+      font-weight: bold;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .log-form button:hover {
+      background: #43db92;
+    }
+    .clear-btn {
+      margin-left: 18px;
+      background: #ff5964 !important;
+      color: #fff !important;
+    }
+    .clear-btn:hover {
+      background: #f32e45 !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Lab Notebook – Premium Tamper Detection Project</h1>
+    <div class="note">
+      This is a private inventor's notebook for tracking invention progress, experiment logs, design notes, and documenting intellectual property development. Entries are saved locally. Developed in Apple Valley, MN.<br>
+      <b>Tip:</b> Export, print, or email yourself this notebook periodically for IP protection.
+    </div>
+
+    <h2>Invention Disclosure (Draft)</h2>
+    <div class="disclosure">
+      <label>Inventor(s):</label>
+      Brandon Neidlinger<br>
+      <label>Date(s) of conception:</label>
+      <span id="conception-date">[Fill in here]</span>
+
+      <label>Title of Invention:</label>
+      Premium Physical Line Tamper Detection and Resilient Wiring System Using Edge AI Sensing
+
+      <label>Summary / Abstract:</label>
+      <div>
+        A system and method for real-time, intelligent detection of physical tampering and intrusion attempts on security wiring (communication lines, sensor loops, etc.) using embedded vibration, current, and signal analytics. The solution combines redundant wiring topologies with on-site (edge) machine learning for anomaly detection, alerting, and attack localization.
+      </div>
+
+      <label>Problem Addressed:</label>
+      <div>
+        Traditional EOL resistor/circuit supervision detects only full open/short. Most systems are blind to advanced attacks (partial shorts, vibration/drilling, pre-cut tampering, etc.). Critical sites require early, intelligent detection—before loss of communication or total cut.
+      </div>
+
+      <label>Key Features/Claims:</label>
+      <ul>
+        <li>Multi-sensor “smart” inline device (vibration, current, signal integrity)</li>
+        <li>AI/ML-based anomaly detection at the wire (not just the panel)</li>
+        <li>Real-time alerting and event classification (distinguishing nuisance from true tamper)</li>
+        <li>Redundant wiring for failover/resilience</li>
+        <li>Retrofit compatibility with common security system wiring</li>
+        <li>Integration with existing JCI panels/platforms</li>
+      </ul>
+
+      <label>Novelty / Uniqueness:</label>
+      <ul>
+        <li>First to combine ML/AI edge analysis with legacy EOL circuits for predictive tamper detection</li>
+        <li>Detects pre-cut and stealth tampering attempts that evade standard hardware</li>
+        <li>Can localize the event (not just “tamper somewhere!”)</li>
+        <li>Optional cloud dashboard and compliance reporting</li>
+      </ul>
+
+      <label>Potential Applications:</label>
+      <ul>
+        <li>Critical infrastructure (utilities, telecom)</li>
+        <li>Financial/data centers</li>
+        <li>Government/high-security facilities</li>
+        <li>Anywhere security and uptime are paramount</li>
+      </ul>
+
+      <label>Prior Art / Competing Solutions:</label>
+      <ul>
+        <li>Standard EOL/tamper circuits (Bosch, Lenel, DMP, etc.)—detect only gross faults</li>
+        <li>Fence detection (Senstar, etc.)—not wire-specific or easily retrofittable</li>
+        <li>No current market solution using edge AI on comm lines</li>
+      </ul>
+
+      <label>How It Works (Tech Summary):</label>
+      <div>
+        A retrofit sensor module is installed inline on monitored wiring. The module continually senses vibration, current, and electrical characteristics, running a trained model locally to flag tampering attempts, mechanical attacks, or electronic interference. Events are classified and pushed to the main panel, optionally sent to a cloud dashboard. Redundant wiring ensures communication even after partial failures.
+      </div>
+
+      <label>Drawings / Diagrams:</label>
+      <div class="sketch">
+        [Attach or paste drawings here: block diagram, wiring topology, sensing module, etc.]
+      </div>
+
+      <label>Location:</label> Apple Valley, MN
+
+      <label>Date of Public Disclosure (if any):</label>
+      None
+
+      <label>Supporting Documents / Prototypes:</label>
+      <ul>
+        <li>Private Github repo</li>
+        <li>Concept notes and field test logs</li>
+      </ul>
+
+      <div class="sig">
+        Signature: _______________________ <br>
+        Date: ____________________________
+      </div>
+    </div>
+
+    <h2>Experiment & Design Log</h2>
+
+    <div class="log-form">
+      <label for="logText">New Entry:</label>
+      <textarea id="logText" placeholder="Describe your experiment, brainstorm, test, or observation..."></textarea><br>
+      <button onclick="addLogEntry()">Add Entry</button>
+      <button class="clear-btn" onclick="clearLogs()">Clear All Logs</button>
+    </div>
+
+    <div class="section" id="logSection">
+      <!-- Log entries will be injected here -->
+    </div>
+
+    <h2>Sketches & Diagrams</h2>
+    <div class="section">
+      <div class="sketch">
+        [You can scan/photograph and embed images here, or use ASCII/block diagrams for now.]
+        <pre>
++--------------------------+
+|  Tamper Detection Module |
++-----------+--------------+
+            |
+      [Vibration]
+      [Current]
+      [AI Model]
+            |
++-----------+--------------+
+|     Comm Line / Panel    |
++--------------------------+
+        </pre>
+      </div>
+    </div>
+
+    <div class="note">
+      <b>Tip:</b> Entries are stored offline in your browser. Print, sign, and/or periodically email yourself this notebook for proof-of-invention dates.
+    </div>
+  </div>
+  <script>
+    // Utility to format date and time
+    function formatDateTime(date) {
+      const yyyy = date.getFullYear();
+      const mm = String(date.getMonth() + 1).padStart(2, '0');
+      const dd = String(date.getDate()).padStart(2, '0');
+      const hh = String(date.getHours()).padStart(2, '0');
+      const min = String(date.getMinutes()).padStart(2, '0');
+      return `${yyyy}-${mm}-${dd} ${hh}:${min}`;
+    }
+
+    // Load logs from localStorage
+    function loadLogs() {
+      const logSection = document.getElementById('logSection');
+      logSection.innerHTML = '';
+      const logs = JSON.parse(localStorage.getItem('tamperLabLogs') || '[]');
+      logs.forEach(log => {
+        const entryDiv = document.createElement('div');
+        entryDiv.className = 'log-entry';
+        entryDiv.innerHTML = `
+          <div class="log-date">${log.date}</div>
+          <div class="log-location">Apple Valley, MN</div>
+          <div>${log.text.replace(/\n/g, '<br>')}</div>
+        `;
+        logSection.appendChild(entryDiv);
+      });
+    }
+
+    // Add new log entry
+    function addLogEntry() {
+      const logText = document.getElementById('logText');
+      if (!logText.value.trim()) return;
+      const logs = JSON.parse(localStorage.getItem('tamperLabLogs') || '[]');
+      logs.unshift({
+        date: formatDateTime(new Date()),
+        text: logText.value.trim()
+      });
+      localStorage.setItem('tamperLabLogs', JSON.stringify(logs));
+      logText.value = '';
+      loadLogs();
+    }
+
+    // Clear all logs
+    function clearLogs() {
+      if (confirm("Are you sure you want to delete all log entries?")) {
+        localStorage.removeItem('tamperLabLogs');
+        loadLogs();
+      }
+    }
+
+    // Initial load
+    window.onload = loadLogs;
+  </script>
+</body>
+</html>
